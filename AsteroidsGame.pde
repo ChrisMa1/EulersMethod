@@ -13,7 +13,7 @@ public void draw(){
   image(bg,width/2,height/2,width, height);
   one.show();
   one.move();
-  println(one.getPointDirection());
+  //println(one.getPointDirection());
   //your code here
 }
 class SpaceShip extends Floater{ 
