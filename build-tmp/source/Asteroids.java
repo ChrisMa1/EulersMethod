@@ -1,9 +1,25 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class Asteroids extends PApplet {
+
 //your variable declarations here
 PImage ship;
 PImage bg; 
 SpaceShip one;
 public void setup(){
-  size(1200,800);
+  size(800,800);
   one=new SpaceShip();
   bg=loadImage("bg.jpg");
   ship=loadImage("ship.png");
@@ -18,26 +34,23 @@ public void draw(){
 }
 class SpaceShip extends Floater{ 
     public double radDir =-Math.PI/2;  
-    public boolean turningR=false;
-    public boolean turningL=false;
-    public String accel="NONE";
     public SpaceShip(){
       myPointDirection=-90; 
       setDirectionX(2);
       setX(width/2);
       setY(height/2);
     }
-    public void setX(int x){myCenterX=x;}
-    public int getX(){return (int)myCenterX;}
-    public void setY(int y){myCenterY=y;}
-    public int getY(){return (int)myCenterY;}
-    public void setDirectionX(double x){myDirectionX=x;}
-    public double getDirectionX(){return (double)myDirectionX;}
-    public void setDirectionY(double y){myDirectionY=y;}
-    public double getDirectionY(){return (double)myDirectionY;}
-    public void setPointDirection(int degrees){myPointDirection=degrees;}
-    public double getPointDirection(){return (double)myPointDirection;}
-    
+      public void setX(int x){myCenterX=x;}
+      public int getX(){return (int)myCenterX;}
+      public void setY(int y){myCenterY=y;}
+      public int getY(){return (int)myCenterY;}
+      public void setDirectionX(double x){myDirectionX=x;}
+      public double getDirectionX(){return (double)myDirectionX;}
+      public void setDirectionY(double y){myDirectionY=y;}
+      public double getDirectionY(){return (double)myDirectionY;}
+      public void setPointDirection(int degrees){myPointDirection=degrees;}
+      public double getPointDirection(){return (double)myPointDirection;}
+
     public void show(){
       pushMatrix();
         translate(getX(), getY());
@@ -46,23 +59,6 @@ class SpaceShip extends Floater{
       popMatrix();  
     }
     public void move(){
-      if(turningR){
-        strafe(1);
-        //radDir+=0.2;  
-      }
-      if(turningL){
-        strafe(-1);
-        //radDir-=0.2;  
-      }
-      if(accel=="FWD"){
-        accelerate(1);  
-      }
-      if(accel=="BK"){
-        accelerate(-1);  
-      }
-      radDir=Math.asin((mouseX-myCenterX)/(dist((float)myCenterX,(float)myCenterY,mouseX,mouseY)))-Math.PI/2;
-      if(myCenterY-mouseY<0)radDir*=-1;
-      myPointDirection=radDir*180/(Math.PI);
       myCenterX += myDirectionX;    
       myCenterY += myDirectionY;     
       //wrap around screen    
@@ -75,49 +71,18 @@ class SpaceShip extends Floater{
         myCenterY = height;    
       } 
     }
-    public void strafe (double dAmount)   
-  {          
-    //convert the current direction the floater is pointing to radians    
-    double dRadians =myPointDirection*(Math.PI/180);     
-    //change coordinates of direction of travel    
-    myDirectionX += ((dAmount) * Math.cos(dRadians+Math.PI/2));    
-    myDirectionY += ((dAmount) * Math.sin(dRadians+Math.PI/2));       
-  }   
 }
-void keyPressed(){
+public void keyPressed(){
   if( key=='w'){
-    one.accel="FWD";
+    one.accelerate(1);
   }
   if(key=='s'){
-    one.accel="BK";
+   one.accelerate(-1);
   }  
   if(key=='a'){
-    one.turningL=true;
-  }
-  if(key=='d'){
-    one.turningR=true;    
+    one.radDir-= 0.1f;
   }
 }
-void keyReleased(){
-  if( key=='w'){
-    one.accel="NONE";
-  }
-  if(key=='s'){
-    one.accel="NONE";
-  }  
-  if(key=='a'){
-    one.turningL=false;
-  }  
-  if(key=='d'){
-    one.turningR=false;    
-  }
-}
-/*class Bullet extends Floater{
-  Bullet(){
-  
-  }
-    
-}*/
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
@@ -195,3 +160,12 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
   }   
 } 
 
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "Asteroids" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}
