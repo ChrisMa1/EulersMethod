@@ -1,12 +1,15 @@
 //your variable declarations here
 PImage ship;
+PImage bolt;
 PImage bg; 
 SpaceShip one;
+ArrayList<Bolt> bolts=new ArrayList<Bolt>();
 public void setup(){
   size(1200,800);
   one=new SpaceShip();
   bg=loadImage("bg.jpg");
   ship=loadImage("ship.png");
+  bolt=loadImage("bolt.png");
 }
 public void draw(){
   imageMode(CENTER);
@@ -17,16 +20,17 @@ public void draw(){
   //your code here
 }
 class SpaceShip extends Floater{ 
-    public double radDir =-Math.PI/2;  
-    public boolean turningR=false;
-    public boolean turningL=false;
-    public String accel="NONE";
+    private double radDir =-Math.PI/2;  
+    private boolean turningR=false;
+    private boolean turningL=false;
+    private boolean braking=false;
+    private String accel="NONE";
     public SpaceShip(){
       myPointDirection=-90; 
-      setDirectionX(2);
       setX(width/2);
       setY(height/2);
     }
+    public float getRadDir(){return (float)radDir;}
     public void setX(int x){myCenterX=x;}
     public int getX(){return (int)myCenterX;}
     public void setY(int y){myCenterY=y;}
@@ -37,7 +41,6 @@ class SpaceShip extends Floater{
     public double getDirectionY(){return (double)myDirectionY;}
     public void setPointDirection(int degrees){myPointDirection=degrees;}
     public double getPointDirection(){return (double)myPointDirection;}
-    
     public void show(){
       pushMatrix();
         translate(getX(), getY());
@@ -60,6 +63,10 @@ class SpaceShip extends Floater{
       if(accel=="BK"){
         accelerate(-1);  
       }
+      if(braking){
+        myDirectionX*=.9;
+        myDirectionY*=.9;
+      }
       radDir=Math.asin((mouseX-myCenterX)/(dist((float)myCenterX,(float)myCenterY,mouseX,mouseY)))-Math.PI/2;
       if(myCenterY-mouseY<0)radDir*=-1;
       myPointDirection=radDir*180/(Math.PI);
@@ -75,14 +82,16 @@ class SpaceShip extends Floater{
         myCenterY = height;    
       } 
     }
-    public void strafe (double dAmount)   
-  {          
+    public void strafe (double dAmount){          
     //convert the current direction the floater is pointing to radians    
     double dRadians =myPointDirection*(Math.PI/180);     
     //change coordinates of direction of travel    
     myDirectionX += ((dAmount) * Math.cos(dRadians+Math.PI/2));    
     myDirectionY += ((dAmount) * Math.sin(dRadians+Math.PI/2));       
   }   
+}
+void mousePressed(){
+  
 }
 void keyPressed(){
   if( key=='w'){
@@ -96,6 +105,9 @@ void keyPressed(){
   }
   if(key=='d'){
     one.turningR=true;    
+  }
+  if(key==' '){
+    one.braking=true;  
   }
 }
 void keyReleased(){
@@ -111,13 +123,38 @@ void keyReleased(){
   if(key=='d'){
     one.turningR=false;    
   }
-}
-/*class Bullet extends Floater{
-  Bullet(){
-  
+  if(key==' '){
+    one.braking=false;  
   }
-    
-}*/
+}
+class Bolt extends Floater{
+  private float radDir;
+  Bolt(){
+    radDir=one.getRadDir();
+    setDirectionX(Math.sin(myPointDirection)*200);
+    setDirectionY(Math.cos(myPointDirection)*200);
+    setX(one.getX());
+    setY(one.getY());
+  }
+  public void setX(int x){myCenterX=x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY=y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX=x;}
+  public double getDirectionX(){return (double)myDirectionX;}
+  public void setDirectionY(double y){myDirectionY=y;}
+  public double getDirectionY(){return (double)myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection=degrees;}
+  public double getPointDirection(){return (double)myPointDirection;}
+  public void show(){
+    pushMatrix();
+    rotate(radDir);
+    image(bolt,(float)myCenterX, (float)myCenterY, 15, 5);
+    popMatrix();
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
