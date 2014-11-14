@@ -16,6 +16,9 @@ public void draw(){
   image(bg,width/2,height/2,width, height);
   one.show();
   one.move();
+  for(int i=0; i<bolts.size(); i++){
+    (bolts.get(i)).show();  
+  }
   //println(one.getPointDirection());
   //your code here
 }
@@ -89,9 +92,36 @@ class SpaceShip extends Floater{
     myDirectionX += ((dAmount) * Math.cos(dRadians+Math.PI/2));    
     myDirectionY += ((dAmount) * Math.sin(dRadians+Math.PI/2));       
   }   
-}
+}///////////////////////////////////////////////////////////////////////////////////
+class Bolt extends Floater{
+  private float radDir;
+  Bolt(){
+    radDir=one.getRadDir();
+    setDirectionX(Math.sin(radDir)*200);
+    setDirectionY(Math.cos(radDir)*200);
+    setX(one.getX());
+    setY(one.getY());
+  }
+  public void setX(int x){myCenterX=x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY=y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX=x;}
+  public double getDirectionX(){return (double)myDirectionX;}
+  public void setDirectionY(double y){myDirectionY=y;}
+  public double getDirectionY(){return (double)myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection=degrees;}
+  public double getPointDirection(){return (double)myPointDirection;}
+  public void show(){
+  pushMatrix();
+    translate((float)myCenterX, (float)myCenterY);
+    rotate(radDir);
+    image(bolt,0, 0, 15, 5);
+  popMatrix();
+  }
+}/////////////////////////////////////////////////////////////////////////////////////
 void mousePressed(){
-  
+  bolts.add(new Bolt());
 }
 void keyPressed(){
   if( key=='w'){
@@ -125,32 +155,6 @@ void keyReleased(){
   }
   if(key==' '){
     one.braking=false;  
-  }
-}
-class Bolt extends Floater{
-  private float radDir;
-  Bolt(){
-    radDir=one.getRadDir();
-    setDirectionX(Math.sin(myPointDirection)*200);
-    setDirectionY(Math.cos(myPointDirection)*200);
-    setX(one.getX());
-    setY(one.getY());
-  }
-  public void setX(int x){myCenterX=x;}
-  public int getX(){return (int)myCenterX;}
-  public void setY(int y){myCenterY=y;}
-  public int getY(){return (int)myCenterY;}
-  public void setDirectionX(double x){myDirectionX=x;}
-  public double getDirectionX(){return (double)myDirectionX;}
-  public void setDirectionY(double y){myDirectionY=y;}
-  public double getDirectionY(){return (double)myDirectionY;}
-  public void setPointDirection(int degrees){myPointDirection=degrees;}
-  public double getPointDirection(){return (double)myPointDirection;}
-  public void show(){
-    pushMatrix();
-    rotate(radDir);
-    image(bolt,(float)myCenterX, (float)myCenterY, 15, 5);
-    popMatrix();
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
