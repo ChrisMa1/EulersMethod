@@ -99,8 +99,8 @@ class Bolt extends Floater{
   private float radDir;
   Bolt(){
     radDir=one.getRadDir();
-    setDirectionX(Math.cos(radDir)*100);
-    setDirectionY(Math.sin(radDir)*100);
+    setDirectionX(Math.cos(radDir)*15);
+    setDirectionY(Math.sin(radDir)*15);
     setX(one.getX());
     setY(one.getY());
   }
