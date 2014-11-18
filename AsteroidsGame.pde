@@ -14,11 +14,13 @@ public void setup(){
 public void draw(){
   imageMode(CENTER);
   image(bg,width/2,height/2,width, height);
-  one.show();
-  one.move();
   for(int i=0; i<bolts.size(); i++){
     (bolts.get(i)).show();  
+    (bolts.get(i)).move();  
+    //if((bolts.get(i)).getX()
   }
+  one.show();
+  one.move();
   //println(one.getPointDirection());
   //your code here
 }
@@ -97,8 +99,8 @@ class Bolt extends Floater{
   private float radDir;
   Bolt(){
     radDir=one.getRadDir();
-    setDirectionX(Math.sin(radDir)*200);
-    setDirectionY(Math.cos(radDir)*200);
+    setDirectionX(Math.cos(radDir)*100);
+    setDirectionY(Math.sin(radDir)*100);
     setX(one.getX());
     setY(one.getY());
   }
@@ -116,8 +118,13 @@ class Bolt extends Floater{
   pushMatrix();
     translate((float)myCenterX, (float)myCenterY);
     rotate(radDir);
-    image(bolt,0, 0, 15, 5);
+    image(bolt,0, 0, 30, 20);
   popMatrix();
+  }
+  public void move (){      
+    //change the x and y coordinates by myDirectionX and myDirectionY       
+    myCenterX += myDirectionX;    
+    myCenterY += myDirectionY;     
   }
 }/////////////////////////////////////////////////////////////////////////////////////
 void mousePressed(){
@@ -157,8 +164,8 @@ void keyReleased(){
     one.braking=false;  
   }
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
+ // // ////////////////////////////////////////////////////////////////////////////////////////////////
+// // ////////////////////////////////////////////////////////////////////////////////////////////////
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
