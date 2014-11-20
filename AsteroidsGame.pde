@@ -2,27 +2,36 @@
 PImage ship;
 PImage bolt;
 PImage bg; 
+PImage ast;
+PImage ast1;
+PImage ast2;
+PImage ast3;
 SpaceShip one;
 ArrayList<Bolt> bolts=new ArrayList<Bolt>();
+ArrayList<Asteroid> asteroids=new ArrayList<Asteroid>();
 public void setup(){
+  cursor(CROSS);
   size(1200,800);
   one=new SpaceShip();
   bg=loadImage("bg.jpg");
   ship=loadImage("ship.png");
   bolt=loadImage("bolt.png");
+  ast=loadImage("asteroid.png");
+  ast1=loadImage("asteroid1.png");
+  ast2=loadImage("asteroid2.png");
+  ast3=loadImage("asteroid3.png");
 }
 public void draw(){
   imageMode(CENTER);
+  //tint(255,50);
   image(bg,width/2,height/2,width, height);
   for(int i=0; i<bolts.size(); i++){
     (bolts.get(i)).show();  
     (bolts.get(i)).move();  
-    //if((bolts.get(i)).getX()
   }
+  noTint();
   one.show();
   one.move();
-  //println(one.getPointDirection());
-  //your code here
 }
 class SpaceShip extends Floater{ 
     private double radDir =-Math.PI/2;  
@@ -50,7 +59,7 @@ class SpaceShip extends Floater{
       pushMatrix();
         translate(getX(), getY());
         rotate((float)(radDir));
-        image(ship,0,0,75,50);
+        image(ship,0,0,90,60);
       popMatrix();  
     }
     public void move(){
@@ -75,6 +84,8 @@ class SpaceShip extends Floater{
       radDir=Math.asin((mouseX-myCenterX)/(dist((float)myCenterX,(float)myCenterY,mouseX,mouseY)))-Math.PI/2;
       if(myCenterY-mouseY<0)radDir*=-1;
       myPointDirection=radDir*180/(Math.PI);
+      if(myDirectionX>50)myDirectionX=50;
+      if(myDirectionY>50)myDirectionY=50;
       myCenterX += myDirectionX;    
       myCenterY += myDirectionY;     
       //wrap around screen    
@@ -99,8 +110,8 @@ class Bolt extends Floater{
   private float radDir;
   Bolt(){
     radDir=one.getRadDir();
-    setDirectionX(Math.cos(radDir)*15);
-    setDirectionY(Math.sin(radDir)*15);
+    setDirectionX(Math.cos(radDir)*50);
+    setDirectionY(Math.sin(radDir)*50);
     setX(one.getX());
     setY(one.getY());
   }
@@ -127,6 +138,41 @@ class Bolt extends Floater{
     myCenterY += myDirectionY;     
   }
 }/////////////////////////////////////////////////////////////////////////////////////
+class Asteroid extends Floater{
+  private float rotation;
+  private PImage image;
+  private float thesize;
+  Asteroid(){
+    if((int)(Math.random()*4)==0){
+      myCenterX=Math.random();
+    }
+    rotation =(float)(Math.random()*0.04-0.2);
+    thesize= (float)(Math.random()*30 +20);
+    myDirectionX=Math.random()*10-5;
+    myDirectionY=Math.random()*10-5;
+  }
+  public void setX(int x){myCenterX=x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY=y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX=x;}
+  public double getDirectionX(){return (double)myDirectionX;}
+  public void setDirectionY(double y){myDirectionY=y;}
+  public double getDirectionY(){return (double)myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection=degrees;}
+  public double getPointDirection(){return (double)myPointDirection;}
+  void move(){
+    myCenterX += myDirectionX;    
+    myCenterY += myDirectionY;
+  }
+  void show(){
+    pushMatrix();
+    translate((float)myCenterX,(float)myCenterY);
+    rotate(rotation);
+    image(image,0,0,thesize,thesize);   
+    popMatrix();
+  }
+}
 void mousePressed(){
   bolts.add(new Bolt());
 }
