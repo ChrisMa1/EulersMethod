@@ -84,8 +84,8 @@ class SpaceShip extends Floater{
       radDir=Math.asin((mouseX-myCenterX)/(dist((float)myCenterX,(float)myCenterY,mouseX,mouseY)))-Math.PI/2;
       if(myCenterY-mouseY<0)radDir*=-1;
       myPointDirection=radDir*180/(Math.PI);
-      if(myDirectionX>50)myDirectionX=50;
-      if(myDirectionY>50)myDirectionY=50;
+      if(myDirectionX>30)myDirectionX=30;
+      if(myDirectionY>30)myDirectionY=30;
       myCenterX += myDirectionX;    
       myCenterY += myDirectionY;     
       //wrap around screen    
@@ -172,7 +172,7 @@ class Asteroid extends Floater{
     image(image,0,0,thesize,thesize);   
     popMatrix();
   }
-}
+}//////////////////////////////////////////////////////////////////////////////////////
 void mousePressed(){
   bolts.add(new Bolt());
 }
