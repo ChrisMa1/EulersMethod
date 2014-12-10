@@ -102,7 +102,7 @@ class SpaceShip extends Floater{
         rotate((float)(radDir));
         image(ship,0,0,100,80);
       popMatrix();  
-      System.out.println(health);
+      //System.out.println(health);
     }
     public void move(){
       if(turningR){
