@@ -30,23 +30,22 @@ public void draw(){
   }
   if(bolts.size()>0){
     for(int i=0; i<bolts.size(); i++){
+      (bolts.get(i)).show();  
+      (bolts.get(i)).move();   
       if(dist(bolts.get(i).getX(), bolts.get(i).getY(), width/2, height/2)>800){
         bolts.remove(i);
-      }
-      (bolts.get(i)).show();  
-      (bolts.get(i)).move();    
+      }  
     }
   }
-  int max=bolts.size();
-  for(int i=0; i<max; i++){
+
+  for(int i=0; i<bolts.size();i++){
     for(int j=0; j<asteroids.size();j++){
-      if( dist(bolts.get(i).getX(), bolts.get(i).getY(), asteroids.get(j).getX(), asteroids.get(j).getY())<40){
+      if(asteroids.get(i)!=null && dist(bolts.get(i).getX(), bolts.get(i).getY(), asteroids.get(j).getX(), asteroids.get(j).getY())<40){
         bolts.remove(i);
         asteroids.remove(j);
-        j--;
-        max=bolts.size();
-      }//else{j++;}
-    }  
+        break;
+      } 
+    }
   }
 
   for(int i=0; i<asteroids.size(); i++){
@@ -184,8 +183,8 @@ class Asteroid extends Floater{
     targY= (int)(Math.random()*(width-200)+100);
     myCenterX=Math.cos(Math.PI*posDeg/180)*725+width/2;
     myCenterY=Math.sin(Math.PI*posDeg/180)*725+height/2;
-    myDirectionX= (targX-myCenterX)/100;
-    myDirectionY= (targY-myCenterY)/100;
+    myDirectionX= (targX-myCenterX)/200;
+    myDirectionY= (targY-myCenterY)/200;
     heading=0;
     rotateBy=(float)(Math.random()*0.04-0.2);
     theSize=(float)(Math.random()*30 +60);
