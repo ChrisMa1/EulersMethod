@@ -7,11 +7,15 @@ interface anAst{
  void show();
  int getX();
  int getY();
+ void takeHealth();
+ int getHealth();
+ int getHitRad();
+ void die();
 }
 SpaceShip one;
 Asteroid other;
 ArrayList<Bolt> bolts=new ArrayList<Bolt>();
-ArrayList<Asteroid> asteroids=new ArrayList<Asteroid>();
+ArrayList<anAst> asteroids=new ArrayList<anAst>();
 public void setup(){
   cursor(CROSS);
   size(1200,800);
@@ -23,10 +27,9 @@ public void setup(){
 
 public void draw(){
   imageMode(CENTER);
-  image(bg,width/2,height/2,width, height);
-
+  image(bg,width/2,height/2,width, height); //background image
   if(asteroids.size()<8){
-    asteroids.add(new Asteroid());  
+    asteroids.add(new Asteroid());  //spawn new asteroids
   }
   if(bolts.size()>0){
     for(int i=0; i<bolts.size(); i++){
@@ -37,31 +40,38 @@ public void draw(){
       }  
     }
   }
-
   for(int i=0; i<bolts.size();i++){
     for(int j=0; j<asteroids.size();j++){
-      if(asteroids.get(i)!=null && dist(bolts.get(i).getX(), bolts.get(i).getY(), asteroids.get(j).getX(), asteroids.get(j).getY())<40){
+      if(asteroids.get(i)!=null && dist(bolts.get(i).getX(), bolts.get(i).getY(), asteroids.get(j).getX(), asteroids.get(j).getY())<asteroids.get(j).getHitRad()){
         bolts.remove(i);
-        asteroids.remove(j);
+        asteroids.get(j).takeHealth();
         break;
       } 
     }
   }
-
   for(int i=0; i<asteroids.size(); i++){
-    if(asteroids.get(i).getHealth()<=0){
-      if(dist(asteroids.get(i).getX(), asteroids.get(i).getY(), width/2, height/2)>800){
-        asteroids.remove(i);
-      }  
+    asteroids.get(i).move();
+    asteroids.get(i).show();
+    if(dist(asteroids.get(i).getX(), asteroids.get(i).getY(), one.getX(), one.getY())<50+asteroids.get(i).getHitRad()){
+      one.takeHealth(asteroids.get(i).getHealth());  
     }
-  asteroids.get(i).move();
-  asteroids.get(i).show();
+    if(asteroids.get(i).getHealth()<=0||dist(asteroids.get(i).getX(), asteroids.get(i).getY(), width/2, height/2)>800){
+      asteroids.get(i).die();
+      asteroids.remove(i);
+    }
+  }
+  for(int i=0; i<asteroids.size(); i++){
+    if(dist(asteroids.get(i).getX(), asteroids.get(i).getY(), one.getX(), one.getY())<50+asteroids.get(i).getHitRad()){
+      one.takeHealth(asteroids.get(i).getHealth());  
+      asteroids.remove(i);
+    }
   }
   one.show();
   one.move();
 }
 class SpaceShip extends Floater{ 
     private boolean alive=true;
+    private int health=50;
     private double radDir =-Math.PI/2;  
     private boolean turningR=false;
     private boolean turningL=false;
@@ -84,12 +94,15 @@ class SpaceShip extends Floater{
     public void setPointDirection(int degrees){myPointDirection=degrees;}
     public double getPointDirection(){return (double)myPointDirection;}
     public boolean isAlive(){return alive;}
+    public void takeHealth(int num){health-=num;};
+    //public void 
     public void show(){
       pushMatrix();
         translate(getX(), getY());
         rotate((float)(radDir));
         image(ship,0,0,100,80);
       popMatrix();  
+      System.out.println(health);
     }
     public void move(){
       if(turningR){
@@ -113,8 +126,8 @@ class SpaceShip extends Floater{
       radDir=Math.asin((mouseX-myCenterX)/(dist((float)myCenterX,(float)myCenterY,mouseX,mouseY)))-Math.PI/2;
       if(myCenterY-mouseY<0)radDir*=-1;
       myPointDirection=radDir*180/(Math.PI);
-      if(myDirectionX>30)myDirectionX=30;
-      if(myDirectionY>30){myDirectionY=30;System.out.println("blah");}
+      if(myDirectionX>20)myDirectionX=20;
+      if(myDirectionY>20){myDirectionY=20;}
       myCenterX += myDirectionX;    
       myCenterY += myDirectionY;     
       //wrap around screen    
@@ -167,13 +180,13 @@ class Bolt extends Floater{
     myCenterY += myDirectionY;     
   }
 }/////////////////////////////////////////////////////////////////////////////////////
-class Asteroid extends Floater{
-  private int health;
-  private float heading;
-  private float rotateBy;
-  private PImage img;
-  private float theSize;
-  private int posDeg;
+class Asteroid extends Floater  implements anAst{
+  protected int health;
+  protected float heading;
+  protected float rotateBy;
+  protected PImage img;
+  protected float theSize;
+  protected int posDeg;
   private int targX;
   private int targY;
   Asteroid(){
@@ -210,6 +223,8 @@ class Asteroid extends Floater{
   public void setPointDirection(int degrees){myPointDirection=degrees;}
   public double getPointDirection(){return (double)myPointDirection;}
   public int getHealth(){return health;}
+  public void takeHealth(){health-=1;}
+  public int getHitRad(){return (int)theSize/2+10;}
   void move(){
     myCenterX += myDirectionX;    
     myCenterY += myDirectionY;
@@ -222,17 +237,22 @@ class Asteroid extends Floater{
     image(img,0,0,theSize,theSize);   
     popMatrix();
   }
+  void die(){
+    for(int i=0; i<((int)(Math.random()*2+3)); i++){
+      asteroids.add(new SmallAsteroid((int)myCenterX,(int)myCenterY)); 
+    } 
+  }
 }//////////////////////////////////////////////////////////////////////////////////////
-/*class SmallAsteroid extends Asteroid{
+class SmallAsteroid extends Asteroid{
   SmallAsteroid(int x,int y){
     health=1;
     myCenterX=x;
     myCenterY=y;
-    myDirectionX=(Math.random()*30-15);
-    myDirectionY=(Math.random()*30-15);
+    myDirectionX=(Math.random()*16-8);
+    myDirectionY=(Math.random()*16-8);
     heading=0;
     rotateBy=(float)(Math.random()*0.04-0.2);
-    theSize=(float)(Math.random()*30 +60);
+    theSize=(float)(Math.random()*10 +30);
     double num=Math.random();
     if(num>0.25){
       img=loadImage("asteroid.png");
@@ -243,8 +263,11 @@ class Asteroid extends Floater{
     }else{
       img=loadImage("asteroid3.png");
     }
+  }
+  void die(){
+    
   }  
-}*/
+}/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void mousePressed(){
   bolts.add(new Bolt());
