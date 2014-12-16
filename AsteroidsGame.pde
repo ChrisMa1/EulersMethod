@@ -2,6 +2,7 @@
 PImage ship;
 PImage bolt;
 PImage bg; 
+PImage shield;
 interface anAst{
  void move();
  void show();
@@ -23,6 +24,7 @@ public void setup(){
   bg=loadImage("bg.jpg");
   ship=loadImage("ship.png");
   bolt=loadImage("bolt.png");
+  shield=loadImage("shield.png");
 }
 
 public void draw(){
@@ -100,7 +102,9 @@ class SpaceShip extends Floater{
       pushMatrix();
         translate(getX(), getY());
         rotate((float)(radDir));
+        image(shield,0,0,140,120);
         image(ship,0,0,100,80);
+        
       popMatrix();  
       System.out.println(health);
     }
