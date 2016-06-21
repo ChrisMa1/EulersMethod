@@ -40,4 +40,7 @@ void drawGrid(){
     }
 };
 void draw(){
+  drawGrid();
+  drawFunc();
+}
 };
